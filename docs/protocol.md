@@ -24,7 +24,7 @@ Captured AQI-off command, with control characters escaped:
 *ICT*AWS_RECV:\x020020A10111789648220120-22{0007:1}25\x03\r
 ```
 
-The component generates fresh correlation values. Replaying old timestamps is not the normal control path.
+The component generates a fresh correlation value for each command.
 
 ## A101 settings
 
@@ -38,7 +38,7 @@ The component generates fresh correlation values. Replaying old timestamps is no
 | `000A` | Sensitivity | 1 Sensitive, 2 Moderate, 3 Insensitive |
 | `0024` | Button lock | 0 unlocked, 1 locked |
 
-Status mode 0 means manual and 4 means off. Speed status can be 0 in Sleep, 5 in Rapid, and 99 when off. These are not extra manual speeds. Selecting a manual speed clears the preset.
+Status mode 0 means manual and 4 means off. Speed status can be 0 in Sleep, 5 in Rapid, and 99 when off. Selecting a manual speed clears the preset.
 
 ## A102 sensors
 
@@ -54,9 +54,9 @@ Filter life remaining is `100 − usage`. The YAML applies the model-specific am
 
 ## Startup and scope
 
-The bridge emulates the original module's `DEVICEREADY`, setup acknowledgements, and paced connection announcements. `AWS_IND` messages are compatibility replies to the motherboard. They do not establish a cloud connection.
+The bridge emulates the original module's `DEVICEREADY`, setup acknowledgements, and paced connection announcements. `AWS_IND` messages are local compatibility replies to the motherboard.
 
-The public source uses documentation addresses (`192.0.2.x`) in the fixed `IPALLOCATED` announcement. That string is sent only over UART and does not configure ESP networking. This sanitised startup tuple has been build-tested, but has not been separately tested on the appliance. Wi-Fi configuration comes from `secrets.yaml`.
+The fixed `IPALLOCATED` UART announcement contains documentation addresses (`192.0.2.x`). Wi-Fi configuration comes from `secrets.yaml`. The sanitised announcement passed the firmware build and still needs testing on the appliance.
 
 Home Assistant supplies local time. Commands wait for valid time, and a query refreshes operating state after time sync and every minute. The fan waits for power-on feedback before sending a requested speed or mode.
 

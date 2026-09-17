@@ -12,7 +12,7 @@ The ESP replaces this Mercury MCR-WMDBE-CWP module. Retain the original board if
 
 <img src="images/motherboard-back.png" width="480" alt="Solder side of the PN001ACW-MAIN motherboard">
 
-No motherboard trace cuts or firmware changes are required. Use the existing CN1 harness for the replacement connection.
+Connect the ESP through the existing CN1 harness. The motherboard and its firmware stay unchanged.
 
 ## Photo index
 

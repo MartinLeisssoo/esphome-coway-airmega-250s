@@ -8,7 +8,7 @@
   </defs>
   <rect width="1120" height="670" fill="#fff"/>
   <text x="38" y="42" class="heading">Airmega 250S · ESP32-C3 replacement</text>
-  <text x="38" y="69" class="small">Electrical connections, not physical pin positions. Original Wi-Fi module disconnected.</text>
+  <text x="38" y="69" class="small">Connections by signal name. Original Wi-Fi module disconnected.</text>
   <rect x="35" y="116" width="270" height="440" rx="8" fill="#f4f6f8" stroke="#b5c0ca"/>
   <rect x="435" y="116" width="270" height="440" rx="8" fill="#f4f6f8" stroke="#b5c0ca"/>
   <rect x="835" y="116" width="250" height="440" rx="8" fill="#f4f6f8" stroke="#b5c0ca"/>

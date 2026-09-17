@@ -1,10 +1,10 @@
 # Coway Airmega 250S · ESPHome
 
-Replace the Airmega 250S Wi-Fi module with an ESP32-C3 for local Home Assistant control. The purifier keeps its physical controls. No Coway account, cloud service, HACS integration, or logic analyser is needed to install this conversion.
+An ESP32-C3 replaces the Airmega 250S Wi-Fi module, giving you local access and control through Home Assistant. The purifier's physical controls remain functional.
 
 Tested on an **Airmega 250S (AP-1720G)** with a **PN001ACW-MAIN Rev. 1.0** motherboard and **MCR-WMDBE-CWP** Wi-Fi module. Other models and board revisions are untested.
 
-## What works
+## Controls and sensors
 
 | Entity | Controls or readings |
 | --- | --- |
@@ -66,7 +66,7 @@ Select the connected USB serial device when prompted. The supplied configuration
 
 <img src="docs/images/motherboard-front.png" width="720" alt="PN001ACW-MAIN motherboard, component side, with CN1 near the lower centre">
 
-*CN1 is near the lower centre. Use its labels, not wire colours.*
+*CN1 is near the lower centre, labelled WIFI PBA.*
 
 ## 3. Wire the replacement
 
@@ -83,11 +83,11 @@ Disconnect the original module. Its UART transmitter must not share the line wit
 | — | LV supply | 3V3 output |
 | RSTN | Not connected | Not connected |
 
-`WIFI on/off` is the module's switched **5 V supply**, not a separate enable input. It powers both the ESP's 5V input and the converter's HV side. Connect all grounds together. Leave unused converter channels open.
+`WIFI on/off` is the module's switched **5 V supply**. It powers both the ESP's 5V input and the converter's HV side. Connect all grounds together. Leave unused converter channels open.
 
 <img src="docs/images/cn1-pinout.png" width="540" alt="CN1 close-up: RSTN, WIFI TX, WIFI RX, WIFI on/off, GND, GND from left to right">
 
-*In this photo, left to right: RSTN, WIFI TX, WIFI RX, WIFI on/off, GND, GND. Connector orientation matters. The diagram shows electrical connections, not physical pin positions.*
+*Left to right: RSTN, WIFI TX, WIFI RX, WIFI on/off, GND, GND. The connector is keyed and fits one way.*
 
 The [Mercury module manual, page 12](https://fcc.report/FCC-ID/2AVW5MCRWMDBECWP/5488722.pdf) specifies a 5 V supply and 5 V UART levels. Its pin numbers refer to the module connector. Match the motherboard silkscreen and verify the harness with a meter before connecting the ESP.
 
@@ -97,7 +97,7 @@ Insulate the joints and secure both boards away from the fan, mains circuitry, a
 
 Power the reassembled purifier with USB disconnected. In Home Assistant, add the discovered **ESPHome** device and enter the API encryption key. If discovery fails, add it using the ESP's address from your router.
 
-Allow about a minute for startup and state updates. Home Assistant supplies time over the local API, which the command format requires after each ESP restart. No internet time service is used.
+Allow about a minute for startup and state updates. Home Assistant supplies time over the local API, which the command format requires after each ESP restart.
 
 Open the fan entity for power, speed, and presets. **Auto** corresponds to the Coway app's **Smart** mode. Set **AQI off** to extinguish the large air-quality light while leaving the small control indicators on.
 
