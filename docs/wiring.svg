@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="670" viewBox="0 0 1120 670" role="img" aria-labelledby="title desc">
+  <title id="title">Coway Airmega 250S to ESP32-C3 wiring</title>
+  <desc id="desc">Coway TX connects through HV1 and LV1 to GPIO4 RX. GPIO5 TX connects through LV2 and HV2 to Coway RX. Coway WIFI on/off supplies 5 volts to the ESP and converter HV. ESP 3V3 supplies converter LV. All grounds are common. RSTN is unused.</desc>
+  <defs>
+    <marker id="blue-arrow" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#1767b4"/></marker>
+    <marker id="green-arrow" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#087a54"/></marker>
+    <style>text{font-family:Arial,sans-serif;fill:#17212b;font-size:18px}.heading{font-size:23px;font-weight:bold}.small{font-size:15px;fill:#53606d}.pin{font-family:monospace;font-size:19px}.wire{fill:none;stroke-width:3;stroke-linejoin:round}</style>
+  </defs>
+  <rect width="1120" height="670" fill="#fff"/>
+  <text x="38" y="42" class="heading">Airmega 250S · ESP32-C3 replacement</text>
+  <text x="38" y="69" class="small">Electrical connections, not physical pin positions. Original Wi-Fi module disconnected.</text>
+  <rect x="35" y="116" width="270" height="440" rx="8" fill="#f4f6f8" stroke="#b5c0ca"/>
+  <rect x="435" y="116" width="270" height="440" rx="8" fill="#f4f6f8" stroke="#b5c0ca"/>
+  <rect x="835" y="116" width="250" height="440" rx="8" fill="#f4f6f8" stroke="#b5c0ca"/>
+  <text x="55" y="151" class="heading">Coway CN1</text><text x="55" y="178" class="small">Motherboard labels · 5 V UART</text>
+  <text x="455" y="151" class="heading">Level converter</text><text x="455" y="178" class="small">HV: 5 V / LV: 3.3 V</text>
+  <text x="855" y="151" class="heading">ESP32-C3</text><text x="855" y="178" class="small">SuperMini · 3.3 V GPIO</text>
+  <text x="55" y="235" class="pin">WIFI TX</text>
+  <text x="452" y="235" class="pin">HV1</text><text x="652" y="235" class="pin">LV1</text>
+  <text x="856" y="235" class="pin">GPIO4 / RX</text>
+  <path class="wire" stroke="#1767b4" marker-end="url(#blue-arrow)" d="M305 228H427"/>
+  <path class="wire" stroke="#1767b4" marker-end="url(#blue-arrow)" d="M505 228H633"/>
+  <path class="wire" stroke="#1767b4" marker-end="url(#blue-arrow)" d="M705 228H827"/>
+  <text x="55" y="305" class="pin">WIFI RX</text>
+  <text x="452" y="305" class="pin">HV2</text><text x="652" y="305" class="pin">LV2</text>
+  <text x="856" y="305" class="pin">GPIO5 / TX</text>
+  <path class="wire" stroke="#087a54" marker-end="url(#green-arrow)" d="M435 298H313"/>
+  <path class="wire" stroke="#087a54" marker-end="url(#green-arrow)" d="M642 298H514"/>
+  <path class="wire" stroke="#087a54" marker-end="url(#green-arrow)" d="M835 298H713"/>
+  <text x="55" y="382" class="pin">WIFI on/off</text><text x="55" y="406" class="small">Switched 5 V supply</text>
+  <text x="452" y="382" class="pin">HV</text>
+  <text x="856" y="382" class="pin">5V input</text>
+  <path class="wire" stroke="#bc3b2b" d="M305 375H435M370 375V96H780V375H835"/>
+  <circle cx="370" cy="375" r="5" fill="#bc3b2b"/>
+  <text x="643" y="452" class="pin">LV</text><text x="856" y="452" class="pin">3V3 output</text>
+  <path class="wire" stroke="#bd7700" d="M705 445H835"/>
+  <text x="55" y="515" class="pin">GND (both pins)</text>
+  <text x="452" y="515" class="pin">GND</text><text x="856" y="515" class="pin">GND</text>
+  <path class="wire" stroke="#414b57" d="M305 508H435M370 508V578H780V508H835"/>
+  <circle cx="370" cy="508" r="5" fill="#414b57"/>
+  <text x="38" y="616">RSTN: leave disconnected. Unused converter channels: leave open.</text>
+  <text x="38" y="644" class="small">Unplug mains before wiring. No direct 5 V to GPIO. Disconnect USB before powering from the purifier.</text>
+</svg>

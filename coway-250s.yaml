@@ -1,0 +1,225 @@
+# Active transmitter: disconnect the original Mercury module before upload.
+esphome:
+  name: coway-airmega-250s
+  friendly_name: Coway Airmega 250S
+  comment: Local UART replacement for the MCR-WMDBE-CWP Wi-Fi module
+
+esp32:
+  board: esp32-c3-devkitm-1
+  framework:
+    type: arduino
+
+logger:
+  level: DEBUG
+  initial_level: INFO
+  logs:
+    coway_250s: DEBUG
+  hardware_uart: USB_SERIAL_JTAG
+
+api:
+  reboot_timeout: 0s
+  encryption:
+    key: !secret api_encryption_key
+  on_client_connected:
+    then:
+      - lambda: |-
+          if (!id(coway_uart).is_failed() && !id(coway).is_failed()) {
+            id(bridge_safe_mode).mark_successful();
+          }
+
+safe_mode:
+  id: bridge_safe_mode
+
+ota:
+  - platform: esphome
+    password: !secret ota_password
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  reboot_timeout: 0s
+  power_save_mode: none
+  # ESP32-C3 SuperMini boards can fail 802.11 authentication at maximum TX power.
+  output_power: 8.5dB
+  fast_connect: true
+  ap:
+    ssid: "COWAY-RECOVERY"
+    password: !secret fallback_ap_password
+    channel: 6
+    ap_timeout: 5s
+
+captive_portal:
+improv_serial:
+debug:
+
+external_components:
+  - source: components
+    components: [coway_250s]
+
+uart:
+  id: coway_uart
+  tx_pin: GPIO5
+  rx_pin: GPIO4
+  baud_rate: 115200
+  data_bits: 8
+  parity: NONE
+  stop_bits: 1
+
+coway_250s:
+  id: coway
+  uart_id: coway_uart
+
+sensor:
+  - platform: uptime
+    name: Bridge Uptime
+    update_interval: 60s
+    entity_category: diagnostic
+    disabled_by_default: true
+
+  - platform: coway_250s
+    panel_lighting:
+      id: coway_panel_lighting
+      internal: true
+    off_timer:
+      id: coway_off_timer
+      internal: true
+    sensitivity:
+      id: coway_sensitivity
+      internal: true
+    button_lock:
+      id: coway_button_lock
+      internal: true
+    pm25:
+      name: PM2.5
+    pm10:
+      name: PM10
+    ambient_light:
+      name: Ambient Light
+      id: ambient_light
+      device_class: illuminance
+      unit_of_measurement: lx
+      accuracy_decimals: 0
+      # Coway 250S model-specific correction used by ha-coway sensor.py.
+      filters:
+        - lambda: return std::max(1022.0f - x, 0.0f);
+    prefilter_remaining:
+      name: Pre-filter Remaining
+    max2_filter_remaining:
+      name: MAX2 Filter Remaining
+
+# The captured commands carry epoch milliseconds. HA supplies time over the
+# local encrypted API; no Coway cloud or Internet time service is needed.
+time:
+  - platform: homeassistant
+    id: local_clock
+    on_time_sync:
+      then:
+        - delay: 1s
+        - lambda: id(coway).request_status();
+
+interval:
+  - interval: 60s
+    then:
+      - lambda: id(coway).request_status();
+
+select:
+  - platform: template
+    name: Panel Lighting
+    id: panel_lighting
+    options:
+      - All on
+      - AQI off
+      - All off
+    update_interval: 1s
+    lambda: |-
+      if (!id(coway_panel_lighting).has_state()) return {};
+      switch (int(id(coway_panel_lighting).state)) {
+        case 0: return {"All on"};
+        case 1: return {"AQI off"};
+        case 2: return {"All off"};
+        default: return {};
+      }
+    set_action:
+      - lambda: |-
+          const int value = x == "All on" ? 0 : x == "AQI off" ? 1 : 2;
+          id(coway).send_control_attribute("0007", value);
+
+  - platform: template
+    name: Sensitivity
+    entity_category: config
+    id: sensitivity
+    options:
+      - Sensitive
+      - Moderate
+      - Insensitive
+    update_interval: 1s
+    lambda: |-
+      if (!id(coway_sensitivity).has_state()) return {};
+      switch (int(id(coway_sensitivity).state)) {
+        case 1: return {"Sensitive"};
+        case 2: return {"Moderate"};
+        case 3: return {"Insensitive"};
+        default: return {};
+      }
+    set_action:
+      - lambda: |-
+          id(coway).send_control_attribute("000A", x == "Sensitive" ? 1 : x == "Moderate" ? 2 : 3);
+
+  - platform: template
+    name: Off Timer
+    id: off_timer
+    options:
+      - "Off"
+      - 1 hour
+      - 2 hours
+      - 4 hours
+      - 8 hours
+    update_interval: 1s
+    lambda: |-
+      if (!id(coway_off_timer).has_state()) return {};
+      switch (int(id(coway_off_timer).state)) {
+        case 0: return {"Off"};
+        case 60: return {"1 hour"};
+        case 120: return {"2 hours"};
+        case 240: return {"4 hours"};
+        case 480: return {"8 hours"};
+        default: return {};
+      }
+    set_action:
+      - lambda: |-
+          const int minutes = x == "1 hour" ? 60 : x == "2 hours" ? 120 :
+                              x == "4 hours" ? 240 : x == "8 hours" ? 480 : 0;
+          id(coway).send_control_attribute("0008", minutes);
+
+fan:
+  - platform: coway_250s
+    name: None
+    id: purifier
+    icon: mdi:air-purifier
+
+switch:
+  - platform: template
+    name: Button Lock
+    entity_category: config
+    id: button_lock
+    restore_mode: DISABLED
+    lambda: |-
+      if (!id(coway_button_lock).has_state()) return {};
+      return id(coway_button_lock).state != 0;
+    turn_on_action:
+      - lambda: id(coway).send_control_attribute("0024", 1);
+    turn_off_action:
+      - lambda: id(coway).send_control_attribute("0024", 0);
+
+text_sensor:
+  - platform: template
+    name: Bridge Firmware Role
+    entity_category: diagnostic
+    disabled_by_default: true
+    lambda: return {"Local A101 controller; original module disconnected"};
+    update_interval: 10s
+  - platform: debug
+    reset_reason:
+      name: Bridge Reset Reason
+      entity_category: diagnostic
+      disabled_by_default: true
