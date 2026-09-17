@@ -79,11 +79,14 @@ Disconnect the original module. Its UART transmitter must not share the line wit
 | `WIFI TX` | HV1 → LV1 | GPIO4 / RX |
 | `WIFI RX` | HV2 ← LV2 | GPIO5 / TX |
 | `WIFI on/off` | HV supply | 5V input |
-| GND | GND | GND |
+| GND (one pin) | HV-side GND | — |
+| — | LV-side GND | GND |
 | — | LV supply | 3V3 output |
 | RSTN | Not connected | Not connected |
 
-`WIFI on/off` is the module's switched **5 V supply**. It powers both the ESP's 5V input and the converter's HV side. Connect all grounds together. Leave unused converter channels open.
+`WIFI on/off` is the module's switched **5 V supply**. It powers both the ESP's 5V input and the converter's HV side.
+
+Connect one CN1 GND pin to the converter's HV-side GND and ESP GND to its LV-side GND. Continuity was confirmed between the converter's two ground pins. Leave the second CN1 GND pin and unused converter channels open.
 
 <img src="docs/images/cn1-pinout.png" width="540" alt="CN1 close-up: RSTN, WIFI TX, WIFI RX, WIFI on/off, GND, GND from left to right">
 

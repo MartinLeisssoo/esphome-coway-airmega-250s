@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1120" height="670" viewBox="0 0 1120 670" role="img" aria-labelledby="title desc">
   <title id="title">Coway Airmega 250S to ESP32-C3 wiring</title>
-  <desc id="desc">Coway TX connects through HV1 and LV1 to GPIO4 RX. GPIO5 TX connects through LV2 and HV2 to Coway RX. Coway WIFI on/off supplies 5 volts to the ESP and converter HV. ESP 3V3 supplies converter LV. All grounds are common. RSTN is unused.</desc>
+  <desc id="desc">Coway TX connects through HV1 and LV1 to GPIO4 RX. GPIO5 TX connects through LV2 and HV2 to Coway RX. Coway WIFI on/off supplies 5 volts to the ESP and converter HV. ESP 3V3 supplies converter LV. One Coway GND pin connects to the converter's HV-side GND. ESP GND connects to its LV-side GND. The converter's ground pins are joined internally. The second Coway GND pin and RSTN are unused.</desc>
   <defs>
     <marker id="blue-arrow" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#1767b4"/></marker>
     <marker id="green-arrow" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#087a54"/></marker>
@@ -34,10 +34,13 @@
   <circle cx="370" cy="375" r="5" fill="#bc3b2b"/>
   <text x="643" y="452" class="pin">LV</text><text x="856" y="452" class="pin">3V3 output</text>
   <path class="wire" stroke="#bd7700" d="M705 445H835"/>
-  <text x="55" y="515" class="pin">GND (both pins)</text>
-  <text x="452" y="515" class="pin">GND</text><text x="856" y="515" class="pin">GND</text>
-  <path class="wire" stroke="#414b57" d="M305 508H435M370 508V578H780V508H835"/>
-  <circle cx="370" cy="508" r="5" fill="#414b57"/>
+  <text x="55" y="515" class="pin">GND (one pin)</text>
+  <text x="55" y="541" class="small">Second GND pin unused</text>
+  <text x="452" y="515" class="pin">GND</text><text x="652" y="515" class="pin">GND</text>
+  <text x="856" y="515" class="pin">GND</text>
+  <path class="wire" stroke="#414b57" d="M305 508H435M705 508H835"/>
+  <path class="wire" stroke="#414b57" stroke-dasharray="5 4" d="M501 508H642"/>
+  <text x="570" y="541" text-anchor="middle" class="small">Grounds joined on the converter</text>
   <text x="38" y="616">RSTN: leave disconnected. Unused converter channels: leave open.</text>
   <text x="38" y="644" class="small">Unplug mains before wiring. No direct 5 V to GPIO. Disconnect USB before powering from the purifier.</text>
 </svg>
